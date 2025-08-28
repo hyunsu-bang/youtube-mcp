@@ -1,0 +1,96 @@
+{
+  "dxt_version": "0.1",
+  "name": "youtube-mcp",
+  "display_name": "YouTube MCP",
+  "version": "1.0.0",
+  "description": "Create playlists from song lists with OAuth2. Search videos, manage playlists, let AI curate your YouTube collections.",
+  "long_description": "A powerful YouTube integration that enables Claude to search videos, create and manage playlists, and help curate your YouTube content. Features OAuth2 authentication for secure access to your YouTube account, allowing full playlist management capabilities beyond read-only operations.",
+  "author": {
+    "name": "Amir Ardeshir",
+    "email": "aardeshir@gmail.com",
+    "url": "https://github.com/aardeshir"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aardeshir/youtube-mcp"
+  },
+  "homepage": "https://github.com/aardeshir/youtube-mcp",
+  "documentation": "https://github.com/aardeshir/youtube-mcp#readme",
+  "support": "https://github.com/aardeshir/youtube-mcp/issues",
+  "icon": "icon.png",
+  "server": {
+    "type": "node",
+    "entry_point": "index.js",
+    "mcp_config": {
+      "command": "node",
+      "args": ["${__dirname}/index.js"],
+      "env": {
+        "YOUTUBE_API_KEY": "${user_config.api_key}",
+        "YOUTUBE_CLIENT_ID": "${user_config.client_id}",
+        "YOUTUBE_CLIENT_SECRET": "${user_config.client_secret}",
+        "YOUTUBE_REFRESH_TOKEN": "${user_config.refresh_token}"
+      }
+    }
+  },
+  "tools": [
+    {
+      "name": "search_videos",
+      "description": "Search for YouTube videos"
+    },
+    {
+      "name": "create_playlist",
+      "description": "Create a new YouTube playlist"
+    },
+    {
+      "name": "add_to_playlist",
+      "description": "Add a video to a playlist"
+    },
+    {
+      "name": "list_playlists",
+      "description": "List user playlists"
+    },
+    {
+      "name": "delete_playlist",
+      "description": "Delete a YouTube playlist"
+    }
+  ],
+  "keywords": ["youtube", "playlist", "oauth2", "video", "ai-curation", "mcp"],
+  "license": "MIT",
+  "compatibility": {
+    "claude_desktop": ">=1.0.0",
+    "platforms": ["darwin", "win32", "linux"],
+    "runtimes": {
+      "node": ">=18.0.0"
+    }
+  },
+  "user_config": {
+    "api_key": {
+      "type": "string",
+      "title": "YouTube API Key",
+      "description": "Your YouTube Data API v3 key (optional for read-only access)",
+      "sensitive": true,
+      "required": false
+    },
+    "client_id": {
+      "type": "string",
+      "title": "OAuth2 Client ID",
+      "description": "Your Google OAuth2 Client ID from Google Cloud Console",
+      "sensitive": false,
+      "required": true
+    },
+    "client_secret": {
+      "type": "string",
+      "title": "OAuth2 Client Secret",
+      "description": "Your Google OAuth2 Client Secret from Google Cloud Console",
+      "sensitive": true,
+      "required": true
+    },
+    "refresh_token": {
+      "type": "string",
+      "title": "OAuth2 Refresh Token",
+      "description": "Your OAuth2 refresh token (run youtube-mcp-setup to generate)",
+      "sensitive": true,
+      "required": true
+    }
+  }
+}

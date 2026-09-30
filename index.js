@@ -7,6 +7,7 @@ import {
 } from '@modelcontextprotocol/sdk/types.js';
 import { google } from 'googleapis';
 import dotenv from 'dotenv';
+import { playlistTools, listPlaylists, listPlaylistsPage } from './playlist-tools.js';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 
@@ -107,16 +108,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
         required: ['playlistId', 'videoId']
       }
     },
-    {
-      name: 'list_playlists',
-      description: 'List user playlists',
-      inputSchema: {
-        type: 'object',
-        properties: {
-          maxResults: { type: 'number', description: 'Max results (1-50)', default: 25 }
-        }
-      }
-    },
+    ...playlistTools,
     {
       name: 'delete_playlist',
       description: 'Delete a YouTube playlist',
@@ -225,26 +217,16 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         };
       }
 
-      case 'list_playlists': {
-        const { maxResults = 25 } = args;
-        
-        const response = await youtube.playlists.list({
-          part: ['snippet', 'contentDetails'],
-          mine: true,
-          maxResults: maxResults
-        });
-
-        const playlists = response.data.items.map(item => ({
-          playlistId: item.id,
-          title: item.snippet.title,
-          description: item.snippet.description,
-          itemCount: item.contentDetails.itemCount
-        }));
+      case 'list_playlists':
+      case 'list_playlists_page': {
+        const result = name === 'list_playlists'
+          ? await listPlaylists(youtube, args)
+          : await listPlaylistsPage(youtube, args);
 
         return {
           content: [{
             type: 'text',
-            text: JSON.stringify(playlists, null, 2)
+            text: JSON.stringify(result, null, 2)
           }]
         };
       }

@@ -50,6 +50,10 @@
       "description": "List user playlists"
     },
     {
+      "name": "list_playlists_page",
+      "description": "List user playlists with pagination tokens and page metadata"
+    },
+    {
       "name": "delete_playlist",
       "description": "Delete a YouTube playlist"
     }

@@ -146,6 +146,49 @@ Create a YouTube playlist called "My Favorites"
 Show my YouTube playlists
 ```
 
+### Browse All Playlist Pages
+
+`list_playlists` keeps its existing first-page array response. For accounts with
+more playlists, use `list_playlists_page`. Both tools require OAuth credentials
+because they request the authenticated user's playlists (`mine: true`); an API
+key alone is insufficient.
+
+Start with omitted arguments or `{ "maxResults": 50 }`:
+
+```json
+{
+  "playlists": [
+    {
+      "playlistId": "PL-example",
+      "title": "My Favorites",
+      "description": "",
+      "itemCount": 12
+    }
+  ],
+  "nextPageToken": "opaque-token-from-youtube",
+  "prevPageToken": null,
+  "pageInfo": { "totalResults": 75, "resultsPerPage": 50 }
+}
+```
+
+Call `list_playlists_page` again with
+`{ "maxResults": 50, "pageToken": "opaque-token-from-youtube" }`.
+Pass tokens unchanged; `prevPageToken` can also be used to go backward.
+Continue while `nextPageToken` is non-null. A missing next/previous token is
+returned as `null`; missing `pageInfo` is also `null`, and a missing `items` list
+becomes an empty `playlists` array. Do not infer completion from the page length.
+
+Each call makes exactly one API request; it does not automatically fetch all
+pages. `maxResults` defaults to 25 and must be an integer from 1 to 50 for both
+playlist tools. `pageToken` is optional for `list_playlists_page` and must be a
+non-empty string when supplied. The page metadata is passed through from
+[YouTube's playlists.list response](https://developers.google.com/youtube/v3/docs/playlists/list).
+
+## Tests
+
+Run `npm test` with Node.js 18 or newer. Tests use a mocked YouTube client and
+require no credentials, installed dependencies, or live API requests.
+
 ## Troubleshooting
 
 ### "YouTube Data API v3 has not been used in project before"

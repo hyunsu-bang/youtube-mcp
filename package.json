@@ -10,6 +10,7 @@
   },
   "scripts": {
     "start": "node index.js",
+    "test": "node --test",
     "auth-setup": "node auth-setup.js"
   },
   "dependencies": {
